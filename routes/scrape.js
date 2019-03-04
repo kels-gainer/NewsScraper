@@ -1,6 +1,7 @@
 var axios = require("axios");
 var cheerio = require("cheerio");
 var mongoose = require("mongoose");
+var db = require("./models");
 
 var Article = require("../models/Article")
 var Note = require("../models/Note")
