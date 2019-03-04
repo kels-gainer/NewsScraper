@@ -1,7 +1,7 @@
 var axios = require("axios");
 var cheerio = require("cheerio");
 var mongoose = require("mongoose");
-var db = require("./models");
+var db = require("../models");
 
 var Article = require("../models/Article")
 var Note = require("../models/Note")
@@ -33,56 +33,57 @@ var scrape = function() {
         return articles;
     });
 };
-
-app.get("/scrape", function(req, res) {
-    axios.get("https://www.nytimes.com/").then(function(res) {
-        var $ = cheerio.load(res.data);
-
-        $("article h2").each(function(i, element) {
-            var result = {};
-
-            result.title = $(this)
-            .children("a")
-            .text();
-            result.link = $(this)
-            .children("a")
-            .attr("href");
-
-            db.Headlines.create(result)
-            .then(function(dbHeadlines) {
-                console.log(Headlines);
-            })
-            .catch(function(err) {
-                console.log(err);
+module.exports = function (app) {
+    app.get("/scrape", function(req, res) {
+        axios.get("https://www.nytimes.com/").then(function(res) {
+            var $ = cheerio.load(res.data);
+    
+            $("article h2").each(function(i, element) {
+                var result = {};
+    
+                result.title = $(this)
+                .children("a")
+                .text();
+                result.link = $(this)
+                .children("a")
+                .attr("href");
+    
+                db.Headlines.create(result)
+                .then(function(dbHeadlines) {
+                    console.log(Headlines);
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
             });
+    
+            res.send("Scrape Complete");
         });
-
-        res.send("Scrape Complete");
     });
-});
-
-app.get("/newsdb", function(req, res) {
-    db.Headlines.find({})
-    .then(function(dbHeadlines) {
-        res.json(dbHeadlines)
-    })
-    .catch(function(err) {
-        res.json(err);
+    
+    app.get("/newsdb", function(req, res) {
+        db.Headlines.find({})
+        .then(function(dbHeadlines) {
+            res.json(dbHeadlines)
+        })
+        .catch(function(err) {
+            res.json(err);
+        });
     });
-});
-
-app.post("/newsdb/:id", function(req, res) {
-    db.Note.create(req.body)
-    .then(function(dbNote) {
-        return db.Headlines.findOneAndUpdate({_id: req.params.id}, {note: dbNote._id}, {new:true});
-    })
-    .then(function(dbHeadlines){
-        res.json(dbHeadlines);
-    })
-    .catch(function(err) {
-        res.json(err);
+    
+    app.post("/newsdb/:id", function(req, res) {
+        db.Note.create(req.body)
+        .then(function(dbNote) {
+            return db.Headlines.findOneAndUpdate({_id: req.params.id}, {note: dbNote._id}, {new:true});
+        })
+        .then(function(dbHeadlines){
+            res.json(dbHeadlines);
+        })
+        .catch(function(err) {
+            res.json(err);
+        });
+    
     });
-
-});
+}
 
 module.exports = scrape
