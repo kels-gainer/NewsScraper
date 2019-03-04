@@ -11,18 +11,18 @@ var ArticleSchema = new Schema({
         type: String,
         required: true
     },
-    note: {
+    img: {
+        type: String,
+        required: true
+    },
+    note: [{
         type: Schema.Types.ObjectId,
         ref: "Note"
-    },
+    }],
     saved: {
         type: Boolean,
         required: true
     },
-    img: {
-        tyep: String,
-        required: true
-    }
 });
 
 var Article = mongoose.model("Article", ArticleSchema);
