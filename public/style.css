@@ -1,0 +1,30 @@
+.body {
+    background-color: #f5f5f5;
+}
+.footer{
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    bottom:0;
+    flex: 1 0 auto;
+}
+#wrapper {
+    margin: 25px;
+}
+.navbar {
+    background-color: #333;
+}
+.brand-logo {
+    margin-left: 25px;
+}
+.material-icons{
+    margin-right: 35px;
+}
+.title{
+    font-family: 'Special Elite', cursive;
+}
+.text{
+    font-family: 'Lato', sans-serif;
+}
+.btns {
+}
