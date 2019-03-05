@@ -1,20 +1,59 @@
 $(document).ready(function(){
 
+    // rendering articles
     $.getJSON("/articles", function(data) {
         for(var i = 0; i < data.length; i++) {
-            $("#articles").appened("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+            $("#articles-list").appened("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
         }
     });
 
-    $(document).on("click", "p", function() {
+    // var allArticles = $("#allArticles")
+    // $(document).on("click", ".btn-scrape", articleScrape);
+    // // $(document).on("click", ".btn.save", articleSave);
+    // $(".clear").on("click", articleClear);
+
+    // function articleScrape(articles) {
+    //     var articleCard = [];
+    //     for (var i=0; i < articles.length; i++) {
+    //         articleCard.push(createCard(articles[i]));
+    //     }
+    //     allArticles.append(articleCard);
+    // };
+
+    // function createCard(article) {
+    //     var card = $("<div class='card'>");
+    //     var cardHeader = $("<div class='card-header'>").append(
+    //         $("<h3>").append(
+    //          $("<a class='article-link' target='_blank'>")
+    //             .attr("href", article.url)
+    //             .text(article.headline),
+    //         $("<a class='btn btn-success save'>Save Article</a>")
+    //        )
+    //     );
+
+    //     var cardBody = $("<div class='card-body'>").text(article.summary);
+        
+    //     card.append(cardHeader, cardBody);
+    //     card.data("_id", article._id);
+    //     return card;
+    // }
+
+    // function articleClear() {
+    //     $.get("/articles").then(function() {
+    //       articleContainer.empty();
+    //     });
+    //   }
+
+    // notes
+    $(document).on("click", "li", function() {
         $("#notes").empty();
-        var tagId = $(this).attr("data0id");
+        var tagId = $(this).attr("data-id");
 
         $.ajax({
             method: "GET",
             url: "/articles/" + tagId
         })
-        .then(function(data) {
+        .done(function(data) {
             console.log(data);
 
             $("#notes").appened("<h2>" + data.title + "</h2>");
@@ -22,7 +61,7 @@ $(document).ready(function(){
             $("#notes").appened("<textarea id= 'bodyinput' name='body'></textarea>");
             $("#notes").appened("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
-            if (data.note) {
+            if (done.note) {
                 $("#titleinput").val(data.note.title);
                 $("#bodyinput"),val(data.note.body);
             }
@@ -40,7 +79,7 @@ $(document).ready(function(){
                 body: $("#bodyinput").val()
             }
         })
-        .then(function(data) {
+        .done(function(data) {
             console.log(data);
 
             $("#notes").empty();

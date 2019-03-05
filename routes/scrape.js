@@ -1,39 +1,41 @@
 var axios = require("axios");
 var cheerio = require("cheerio");
-var mongoose = require("mongoose");
 var db = require("../models");
+
 
 var Article = require("../models/Article")
 var Note = require("../models/Note")
 
-var scrape = function() {
-    return axios.get("http://www.nytimes.com").then(function(res) {
-        var $ = cheerio.load(res.data);
-        var articles = [];
+// var scrape = function() {
+//     return axios.get("http://www.nytimes.com").then(function(res) {
+//         var $ = cheerio.load(res.data);
+//         var articles = [];
 
-        $("article.css-180b3ld").each(function(i, element) {
+//         $("article.css-180b3ld").each(function(i, element) {
             
-            var head = $(this).find("h2").text().trim();
-            var url = $(this).find("a").attr("href");
-            var sum = $(this).find("p").text().trim();
+//             var head = $(this).find("h2").text().trim();
+//             var url = $(this).find("a").attr("href");
+//             var sum = $(this).find("p").text().trim();
 
-            if(head && sum && url) {
-                var headNeat = head.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
-                var sumNeat = sum.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim(); 
+//             if(head && sum && url) {
+//                 var headNeat = head.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim();
+//                 var sumNeat = sum.replace(/(\r\n|\n|\r|\t|\s+)/gm, " ").trim(); 
                 
-                var dataAdded = {
-                    headline: headNeat,
-                    summary: sumNeat,
-                    url: "https://www.nytimes.com" + url
-                };
+//                 var dataAdded = {
+//                     headline: headNeat,
+//                     summary: sumNeat,
+//                     url: "https://www.nytimes.com" + url
+//                 };
 
-                articles.push(dataAdded);
-            }
-        });
-        return articles;
-    });
-};
+//                 articles.push(dataAdded);
+//             }
+//         });
+//         return articles;
+//     });
+// };
+
 module.exports = function (app) {
+
     app.get("/scrape", function(req, res) {
         axios.get("https://www.nytimes.com/").then(function(res) {
             var $ = cheerio.load(res.data);
@@ -48,9 +50,9 @@ module.exports = function (app) {
                 .children("a")
                 .attr("href");
     
-                db.Headlines.create(result)
+                db.Article.create({result})
                 .then(function(dbHeadlines) {
-                    console.log(Headlines);
+                    console.log(dbHeadlines);
                 })
                 .catch(function(err) {
                     console.log(err);
@@ -61,8 +63,8 @@ module.exports = function (app) {
         });
     });
     
-    app.get("/newsdb", function(req, res) {
-        db.Headlines.find({})
+    app.get("/articles", function(req, res) {
+        db.Article.find({})
         .then(function(dbHeadlines) {
             res.json(dbHeadlines)
         })
@@ -70,11 +72,22 @@ module.exports = function (app) {
             res.json(err);
         });
     });
+
+    app.get("/articles/:id", function(req, res) {
+        db.Article.findOne({ _id: req.params.id })
+        .populate("note")
+        .then(function(dbHeadlines) {
+            res.json(dbHeadlines);
+        })
+        .catch(function(err) {
+            res.json(err);
+        });
+    });
     
-    app.post("/newsdb/:id", function(req, res) {
+    app.post("/articles/:id", function(req, res) {
         db.Note.create(req.body)
         .then(function(dbNote) {
-            return db.Headlines.findOneAndUpdate({_id: req.params.id}, {note: dbNote._id}, {new:true});
+            return db.Article.findOneAndUpdate({_id: req.params.id}, {note: dbNote._id}, {new:true});
         })
         .then(function(dbHeadlines){
             res.json(dbHeadlines);
@@ -86,4 +99,4 @@ module.exports = function (app) {
     });
 }
 
-module.exports = scrape
+// module.exports = scrape
