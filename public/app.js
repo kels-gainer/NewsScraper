@@ -3,7 +3,7 @@ $(document).ready(function(){
     // rendering articles
     $.getJSON("/articles", function(data) {
         for(var i = 0; i < data.length; i++) {
-            $("#articles-list").appened("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+            $("#articles-list").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
         }
     });
 
@@ -56,10 +56,10 @@ $(document).ready(function(){
         .done(function(data) {
             console.log(data);
 
-            $("#notes").appened("<h2>" + data.title + "</h2>");
-            $("#notes").appened("<input id='titleinput' name='title' >");
-            $("#notes").appened("<textarea id= 'bodyinput' name='body'></textarea>");
-            $("#notes").appened("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+            $("#notes").append("<h2>" + data.title + "</h2>");
+            $("#notes").append("<input id='titleinput' name='title' >");
+            $("#notes").append("<textarea id= 'bodyinput' name='body'></textarea>");
+            $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
             if (done.note) {
                 $("#titleinput").val(data.note.title);
