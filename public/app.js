@@ -1,24 +1,30 @@
+function createArticles(data) {
+  for (var i = 0; i < data.length; i++) {
+    $("#articles-list").append(
+      "<p data-id='" +
+        data[i]._id +
+        "'>" +
+        "<a href=" +
+        data[i].link +
+        ">" +
+        data[i].title +
+        "</a></p>"
+    );
+  }
+}
+
 $(document).ready(function() {
   // rendering articles
   $.getJSON("/articles", function(data) {
-    for (var i = 0; i < data.length; i++) {
-      $("#articles-list").append(
-        "<p data-id='" +
-          data[i]._id +
-          "'>" +
-          "<a href=" +
-          data[i].link +
-          ">" +
-          data[i].title +
-          "</a></p>"
-      );
-    }
+    createArticles(data);
   });
 
   $(".btn-scrape").on("click", function() {
-    console.log("scrape");
-    $.get("/scrape").then(data => console.log(data));
+    $.get("/scrape").then(data => {
+      createArticles(data);
+    });
   });
+
   // var allArticles = $("#allArticles")
   // $(document).on("click", ".btn-scrape", articleScrape);
   // // $(document).on("click", ".btn.save", articleSave);

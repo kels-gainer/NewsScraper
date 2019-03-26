@@ -48,8 +48,10 @@ module.exports = function(app) {
             $(element)
               .parents("a")
               .attr("href");
+
           result.push({ title: title, link: link, saved: false, img: "false" });
         });
+
         db.Article.insertMany(result)
           .then(function(dbHeadlines) {
             console.log(dbHeadlines);
@@ -100,6 +102,9 @@ module.exports = function(app) {
       .catch(function(err) {
         res.json(err);
       });
+  });
+  app.post("/notes/:id", function(req, res) {
+    // insert the note to the article with the matching ID
   });
 };
 
