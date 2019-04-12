@@ -7,43 +7,6 @@ $(document).ready(function(){
         }
     });
 
-    // var allArticles = $("#allArticles")
-    // $(document).on("click", ".btn-scrape", articleScrape);
-    // // $(document).on("click", ".btn.save", articleSave);
-    // $(".clear").on("click", articleClear);
-
-    // function articleScrape(articles) {
-    //     var articleCard = [];
-    //     for (var i=0; i < articles.length; i++) {
-    //         articleCard.push(createCard(articles[i]));
-    //     }
-    //     allArticles.append(articleCard);
-    // };
-
-    // function createCard(article) {
-    //     var card = $("<div class='card'>");
-    //     var cardHeader = $("<div class='card-header'>").append(
-    //         $("<h3>").append(
-    //          $("<a class='article-link' target='_blank'>")
-    //             .attr("href", article.url)
-    //             .text(article.headline),
-    //         $("<a class='btn btn-success save'>Save Article</a>")
-    //        )
-    //     );
-
-    //     var cardBody = $("<div class='card-body'>").text(article.summary);
-        
-    //     card.append(cardHeader, cardBody);
-    //     card.data("_id", article._id);
-    //     return card;
-    // }
-
-    // function articleClear() {
-    //     $.get("/articles").then(function() {
-    //       articleContainer.empty();
-    //     });
-    //   }
-
     // notes
     $(document).on("click", "li", function() {
         $("#notes").empty();
@@ -53,7 +16,7 @@ $(document).ready(function(){
             method: "GET",
             url: "/articles/" + tagId
         })
-        .done(function(data) {
+        .then(function(data) {
             console.log(data);
 
             $("#notes").append("<h2>" + data.title + "</h2>");
@@ -61,13 +24,28 @@ $(document).ready(function(){
             $("#notes").append("<textarea id= 'bodyinput' name='body'></textarea>");
             $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
-            if (done.note) {
+            if (then.note) {
                 $("#titleinput").val(data.note.title);
                 $("#bodyinput"),val(data.note.body);
             }
         });
     });
 
+// scrapping data
+    $(document).on("click", "create-btn", function() {
+        $("#articles").empty();
+        var tagId = $(this).attr("data-id");
+
+        $.ajax({
+            method: "PUT",
+            url: "/scrape" + tagId
+        })
+        .then(function(data) {
+            console.log(data);
+        });
+        
+        // end scrapping
+    });
     $(document).on("click", "#savenote", function() {
         var tagId = $(this).attr("data-id");
 
@@ -79,7 +57,7 @@ $(document).ready(function(){
                 body: $("#bodyinput").val()
             }
         })
-        .done(function(data) {
+        .then(function(data) {
             console.log(data);
 
             $("#notes").empty();
